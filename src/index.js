@@ -1,22 +1,22 @@
-// Importar as bibliotecas necessárias
+
 import express from "express";
 import dotenv from "dotenv";
-import prisma from "./db.js"; // Importar nossa conexão com o banco
+import prisma from "./db.js"; 
 import { Prisma } from "@prisma/client";
 
-// Carregar variáveis de ambiente do arquivo .env
+
 dotenv.config();
 
-// Criar aplicação Express
+
 const app = express();
 
-// Middleware para processar JSON nas requisições
+
 app.use(express.json());
 
-//Healthcheck
+
 app.get("/", (_req, res) => res.json({ ok: true, service: "API 3º Bimestre" }));
 
-//CREATE: POST /usuarios
+
 app.post("/usuarios", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -27,14 +27,14 @@ app.post("/usuarios", async (req, res) => {
     res.status(201).json(novoUsuario);
   } catch (error) {
     if (error.code === "P2002") {
-      return res.status(409).json({ error: "E-mail já cadastrado" });
+      return res.status(409).json({ error: "E-mail já feito meu patrão" });
     }
 
-    res.status(500).json({ error: "Erro ao criar usuário" });
+    res.status(500).json({ error: "deu erro" });
   }
 });
 
-//READ: GET /usuarios
+
 app.get("/usuarios", async (_req, res) => {
   try {
     const usuarios = await prisma.user.findMany({
@@ -42,7 +42,7 @@ app.get("/usuarios", async (_req, res) => {
     });
     res.json(usuarios);
   } catch (error) {
-    res.status(500).json({ error: "Erro ao listar usuários" });
+    res.status(500).json({ error: "Erro ao listar os coiso" });
   }
 });
 
@@ -51,7 +51,7 @@ app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
 
-// GET /usuarios/:id - Busca usuário por id
+
 app.get("/usuarios/:id", async (req, res) => {
   try {
     const usuario = await prisma.user.findUnique({
@@ -66,16 +66,16 @@ app.get("/usuarios/:id", async (req, res) => {
   }
 });
 
-//ROTA DE TESTE
+
 app.get("/status", (req, res) => {
   res.json({ message: "API Online" });
 });
-// POST /stores - Cria uma nova loja (1-1 com User)
+
 app.post('/stores', async (req, res) => {
   try {
     const { name, userId } = req.body
 
-    // Validação opcional: impede múltiplas lojas por user (1-1)
+    
     const existingStore = await prisma.store.findUnique({
       where: { userId: Number(userId) }
     })
@@ -96,7 +96,7 @@ app.post('/stores', async (req, res) => {
   }
 })
 
-// GET /stores/:id - Retorna loja + dono + produtos
+
 app.get('/stores/:id', async (req, res) => {
   try {
     const store = await prisma.store.findUnique({
@@ -117,7 +117,7 @@ app.get('/stores/:id', async (req, res) => {
   }
 })
 
-// PUT /stores/:id - Atualiza loja
+
 app.put('/stores/:id', async (req, res) => {
   try {
     const { name, userId } = req.body
@@ -136,7 +136,7 @@ app.put('/stores/:id', async (req, res) => {
   }
 })
 
-// DELETE /stores/:id - Remove loja
+
 app.delete('/stores/:id', async (req, res) => {
   try {
     await prisma.store.delete({
@@ -149,9 +149,9 @@ app.delete('/stores/:id', async (req, res) => {
   }
 })
 
-// ========== PRODUCTS ========== //
 
-// POST /products - Cria um produto
+
+
 app.post('/products', async (req, res) => {
   try {
     const { name, price, storeId } = req.body
@@ -159,7 +159,7 @@ app.post('/products', async (req, res) => {
     const product = await prisma.product.create({
       data: {
         name,
-        price: new Prisma.Decimal(price), // Usando Prisma.Decimal para compatibilidade
+        price: new Prisma.Decimal(price), 
         storeId: Number(storeId)
       }
     })
@@ -170,7 +170,7 @@ app.post('/products', async (req, res) => {
   }
 })
 
-// GET /products - Lista todos produtos com loja e dono
+
 app.get('/products', async (req, res) => {
   try {
     const products = await prisma.product.findMany({
@@ -189,7 +189,7 @@ app.get('/products', async (req, res) => {
   }
 })
 
-// GET /products/:id - Busca produto por id
+
 app.get('/products/:id', async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
@@ -213,7 +213,7 @@ app.get('/products/:id', async (req, res) => {
   }
 });
 
-// PUT /products/:id - Atualiza produto
+
 app.put('/products/:id', async (req, res) => {
   try {
     const { name, price, storeId } = req.body
@@ -233,7 +233,7 @@ app.put('/products/:id', async (req, res) => {
   }
 })
 
-// DELETE /products/:id - Remove produto
+
 app.delete('/products/:id', async (req, res) => {
   try {
     await prisma.product.delete({
@@ -245,7 +245,7 @@ app.delete('/products/:id', async (req, res) => {
     res.status(400).json({ error: e.message })
   }
 })
-// PUT /usuarios/:id - Atualiza um usuário
+
 app.put("/usuarios/:id", async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -266,7 +266,7 @@ app.put("/usuarios/:id", async (req, res) => {
   }
 });
 
-// DELETE /usuarios/:id - Remove um usuário
+
 app.delete("/usuarios/:id", async (req, res) => {
   try {
     await prisma.user.delete({
